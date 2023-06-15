@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="scripts.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="#" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div id="main">
+      <div id="canvasContainer">
+        <canvas id="canvas" width="500" height="310"></canvas>
+      </div>
+      <div id="tableContainer">
+        <table id="cardsTable" class="hidden">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Created At</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Priority</th>
+            </tr>
+          </thead>
+          <tbody id="cardsTableTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="item">
+        <div>
+          <label for="fileInput">Upload a CSV file</label>
+        </div>
+        <div>
+          <input type="file" id="fileInput" accept=".csv" />
+        </div>
+      </div>
+      <div class="item">
+        <div>
+          <label for="startDateColorpicker">Start Date Bar Color</label>
+        </div>
+        <div>
+          <input type="color" id="startDateColorpicker" value="#f9c5bd" />
+        </div>
+      </div>
+      <div class="item">
+        <div>
+          <label for="endDateColorpicker">End Cards Bar Color</label>
+        </div>
+        <div>
+          <input type="color" id="endDateColorpicker" value="#9bc400" />
+        </div>
+      </div>
+      <div class="item">
+        <div>
+          <label for="startOfWeek">Start of week</label>
+        </div>
+        <div>
+          <select name="startOfWeek" id="startOfWeekSelect">
+            <option value="0">Sunday</option>
+            <option value="1" selected>Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+          </select>
+        </div>
+      </div>
+      <div class="item">
+        <div>
+          <label for="endOfWeek">End of week</label>
+        </div>
+        <div>
+          <select name="endOfWeek" id="endOfWeekSelect">
+            <option value="0">Sunday</option>
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5" selected>Friday</option>
+            <option value="6">Saturday</option>
+          </select>
+        </div>
+      </div>
+      <div class="item">
+        <div>
+          <label for="chartGranularity">Chart granularity</label>
+        </div>
+        <div>
+          <select name="chartGranularity" id="granularitySelect">
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+      </div>
+      <div class="item button">
+        <button id="graphButton" disabled>Graph it</button>
+        <span class="warning">Upload a file first!</span>
+      </div>
+      <!-- <div class="item">
+        <button id="graphByDate" disabled>Graph by date</button>
+        <button id="graphByMonths">Graph by month</button>
+      </div> -->
+    </div>
+  </body>
+</html>
+<!-- <script>
+  window.addEventListener('load', () => {
+    let date = new Date('2021-11-01');
+    const startOfWeek = 4;
+    const endOfWeek = 2;
+    getStartOfWeek(date, startOfWeek, endOfWeek);
+
+    function getStartOfWeek(date, startOfWeek, endOfWeek) {
+      const dayOfWeek = date.getDay();
+      const dayOfMonth = date.getDate();
+      // console.log('dayOfMonth', dayOfMonth);
+      let daysToBeginningOfWeek;
+      console.log('day of week', dayOfWeek);
+      console.log('startOfWeek', startOfWeek);
+      console.log('endOfWeek', endOfWeek);
+      if (isWorkDay(startOfWeek, endOfWeek, date)) {
+        console.log('is work day');
+        if (dayOfWeek >= startOfWeek) {
+          daysToBeginningOfWeek = dayOfWeek - startOfWeek;
+        } else {
+          daysToBeginningOfWeek = dayOfWeek + (7 - startOfWeek);
+        }
+        console.log('daysToBeginningOfWeek', daysToBeginningOfWeek);
+        const finalDate = dayOfMonth - daysToBeginningOfWeek;
+        console.log('old date', date);
+        date.setDate(finalDate);
+        // console.log('finalDate', finalDate);
+        console.log('start of work week', date);
+      }
+    }
+
+    function isWorkDay(startOfWeek, endOfWeek, date) {
+      dateToTest = new Date(date).getDay();
+
+      if (startOfWeek < endOfWeek) {
+        return dateToTest >= startOfWeek && dateToTest <= endOfWeek;
+      }
+      if (startOfWeek > endOfWeek) {
+        return !(dateToTest > endOfWeek && dateToTest < startOfWeek);
+      }
+    }
+  });
+</script> -->
