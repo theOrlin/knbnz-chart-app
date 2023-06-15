@@ -108,53 +108,6 @@
         <button id="graphButton" disabled>Graph it</button>
         <span class="warning">Upload a file first!</span>
       </div>
-      <!-- <div class="item">
-        <button id="graphByDate" disabled>Graph by date</button>
-        <button id="graphByMonths">Graph by month</button>
-      </div> -->
     </div>
   </body>
 </html>
-<!-- <script>
-  window.addEventListener('load', () => {
-    let date = new Date('2021-11-01');
-    const startOfWeek = 4;
-    const endOfWeek = 2;
-    getStartOfWeek(date, startOfWeek, endOfWeek);
-
-    function getStartOfWeek(date, startOfWeek, endOfWeek) {
-      const dayOfWeek = date.getDay();
-      const dayOfMonth = date.getDate();
-      // console.log('dayOfMonth', dayOfMonth);
-      let daysToBeginningOfWeek;
-      console.log('day of week', dayOfWeek);
-      console.log('startOfWeek', startOfWeek);
-      console.log('endOfWeek', endOfWeek);
-      if (isWorkDay(startOfWeek, endOfWeek, date)) {
-        console.log('is work day');
-        if (dayOfWeek >= startOfWeek) {
-          daysToBeginningOfWeek = dayOfWeek - startOfWeek;
-        } else {
-          daysToBeginningOfWeek = dayOfWeek + (7 - startOfWeek);
-        }
-        console.log('daysToBeginningOfWeek', daysToBeginningOfWeek);
-        const finalDate = dayOfMonth - daysToBeginningOfWeek;
-        console.log('old date', date);
-        date.setDate(finalDate);
-        // console.log('finalDate', finalDate);
-        console.log('start of work week', date);
-      }
-    }
-
-    function isWorkDay(startOfWeek, endOfWeek, date) {
-      dateToTest = new Date(date).getDay();
-
-      if (startOfWeek < endOfWeek) {
-        return dateToTest >= startOfWeek && dateToTest <= endOfWeek;
-      }
-      if (startOfWeek > endOfWeek) {
-        return !(dateToTest > endOfWeek && dateToTest < startOfWeek);
-      }
-    }
-  });
-</script> -->
