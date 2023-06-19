@@ -1,14 +1,5 @@
 (function () {
-  const canvas = document.getElementById('canvas');
-  const fileInput = document.getElementById('fileInput');
-  const startDateColorpicker = document.getElementById('startDateColorpicker');
-  const endDateColorpicker = document.getElementById('endDateColorpicker');
-  const graphButton = document.getElementById('graphButton');
-  const granularitySelect = document.getElementById('granularitySelect');
-  const startOfWeekSelect = document.getElementById('startOfWeekSelect');
-  const endOfWeekSelect = document.getElementById('endOfWeekSelect');
-  const cardsTable = document.getElementById('cardsTable');
-
+  // App variables
   let chartGranularity = 'day';
   let jsData;
   let cardsByDate;
@@ -23,6 +14,19 @@
   let endOfWeek = 5;
   let xCoordinates = [];
   let yCoordinates = [];
+
+  // HTML elements
+  const canvas = document.getElementById('canvas');
+  const fileInput = document.getElementById('fileInput');
+  const startDateColorpicker = document.getElementById('startDateColorpicker');
+  const endDateColorpicker = document.getElementById('endDateColorpicker');
+  const graphButton = document.getElementById('graphButton');
+  const granularitySelect = document.getElementById('granularitySelect');
+  const startOfWeekSelect = document.getElementById('startOfWeekSelect');
+  const endOfWeekSelect = document.getElementById('endOfWeekSelect');
+  const cardsTable = document.getElementById('cardsTable');
+
+  //Event listeners
 
   fileInput.addEventListener(
     'change',
@@ -39,23 +43,46 @@
     false
   );
 
-  function csvToJSON(csv) {
-    const lines = csv.split('\r\n');
-    const result = [];
-    const headers = lines[0].split(',');
+  graphButton.addEventListener('click', redraw, false);
 
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i]) continue;
-      const obj = {};
-      const currentline = lines[i].split(',');
-
-      for (let j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j];
-      }
-      result.push(obj);
+  granularitySelect.addEventListener('change', (e) => {
+    chartGranularity = e.target.value;
+    if (jsData) {
+      redraw();
     }
-    return result;
-  }
+  });
+
+  startDateColorpicker.addEventListener(
+    'change',
+    changeStartDateBarColor,
+    false
+  );
+
+  endDateColorpicker.addEventListener('change', changeEndDateBarColor, false);
+
+  startOfWeekSelect.addEventListener('change', (e) => {
+    const selected = e.target.value;
+    startOfWeek = selected;
+    if (jsData) {
+      calculateCardLists();
+      redraw();
+    }
+  });
+
+  endOfWeekSelect.addEventListener('change', (e) => {
+    const selected = e.target.value;
+    endOfWeek = selected;
+    if (jsData) {
+      calculateCardLists();
+      redraw();
+    }
+  });
+
+  canvas.addEventListener('click', (event) => {
+    getClickedBar(event);
+  });
+
+  // Card list functions
 
   function calculateCardLists() {
     cardsByDate = buildListByDate(jsData);
@@ -182,7 +209,7 @@
     return allMonthsList;
   }
 
-  graphButton.addEventListener('click', redraw, false);
+  // Canvas functions
 
   function redraw(e) {
     if (e) {
@@ -355,33 +382,53 @@
           (i + 1) * padding +
           (i + 1) * barPixelWidth +
           i * barPixelWidth,
-        barPixelHeight + padding * 3
+        barPixelHeight + padding * 2.75
       );
     }
 
     // Draw legend
     ctx.fillStyle = startDateBarColor;
-    ctx.fillRect(xLabelPaddingLeft, barPixelHeight + padding * 3 + 2, 50, 10);
+    ctx.fillRect(
+      xLabelPaddingLeft,
+      barPixelHeight + padding * 3 + 2,
+      barPixelWidth,
+      10
+    );
+
     ctx.fillStyle = 'black';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(
+      xLabelPaddingLeft + 0.5,
+      barPixelHeight + padding * 3 + 2.5,
+      barPixelWidth,
+      10
+    );
+
     ctx.textAlign = 'left';
     ctx.fillText(
       'Started cards',
-      xLabelPaddingLeft + 45 + padding / 2,
+      xLabelPaddingLeft + 25 + padding / 2,
       barPixelHeight + padding * 3.75
     );
 
     ctx.fillStyle = endDateBarColor;
     ctx.fillRect(
-      xLabelPaddingLeft + 140,
+      xLabelPaddingLeft + 120,
       barPixelHeight + padding * 3 + 2,
-      50,
+      barPixelWidth,
       10
     );
+
     ctx.fillStyle = 'black';
-    ctx.textAlign = 'left';
+    ctx.strokeRect(
+      xLabelPaddingLeft + 120.5,
+      barPixelHeight + padding * 3 + 2.5,
+      barPixelWidth,
+      10
+    );
     ctx.fillText(
       'Finished cards',
-      xLabelPaddingLeft + 185 + padding / 2,
+      xLabelPaddingLeft + 145 + padding / 2,
       barPixelHeight + padding * 3.75
     );
   }
@@ -398,13 +445,6 @@
     return maxItem;
   }
 
-  granularitySelect.addEventListener('change', (e) => {
-    chartGranularity = e.target.value;
-    if (jsData) {
-      redraw();
-    }
-  });
-
   function changeStartDateBarColor(event) {
     startDateBarColor = event.target.value;
     if (jsData) {
@@ -419,66 +459,7 @@
     }
   }
 
-  startDateColorpicker.addEventListener(
-    'change',
-    changeStartDateBarColor,
-    false
-  );
-
-  endDateColorpicker.addEventListener('change', changeEndDateBarColor, false);
-
-  startOfWeekSelect.addEventListener('change', (e) => {
-    const selected = e.target.value;
-    startOfWeek = selected;
-    if (jsData) {
-      calculateCardLists();
-      redraw();
-    }
-  });
-
-  endOfWeekSelect.addEventListener('change', (e) => {
-    const selected = e.target.value;
-    endOfWeek = selected;
-    if (jsData) {
-      calculateCardLists();
-      redraw();
-    }
-  });
-
-  function isWorkDay(startOfWeek, endOfWeek, date) {
-    dateToTest = new Date(date).getDay();
-
-    if (startOfWeek < endOfWeek) {
-      return dateToTest >= startOfWeek && dateToTest <= endOfWeek;
-    }
-    if (startOfWeek > endOfWeek) {
-      return !(dateToTest > endOfWeek && dateToTest < startOfWeek);
-    }
-  }
-
-  function getStartOfWeek(date, startOfWeek, endOfWeek) {
-    const dateObj = new Date(date);
-    const dayOfWeek = dateObj.getDay();
-    const dayOfMonth = dateObj.getDate();
-    let daysToBeginningOfWeek;
-
-    if (isWorkDay(startOfWeek, endOfWeek, date)) {
-      if (dayOfWeek >= startOfWeek) {
-        daysToBeginningOfWeek = dayOfWeek - startOfWeek;
-      } else {
-        daysToBeginningOfWeek = dayOfWeek + (7 - startOfWeek);
-      }
-
-      const finalDate = dayOfMonth - daysToBeginningOfWeek;
-      dateObj.setDate(finalDate);
-
-      return dateObj.toISOString().substring(0, 10);
-    } else {
-      return null;
-    }
-  }
-
-  canvas.addEventListener('click', (event) => {
+  function getClickedBar(event) {
     const bound = canvas.getBoundingClientRect();
 
     const x = event.clientX - bound.left - canvas.clientLeft;
@@ -542,7 +523,9 @@
         break;
       }
     }
-  });
+  }
+
+  // Table functions
 
   function populateTable(tableData) {
     let oldTbody = document.getElementById('cardsTableTbody');
@@ -569,5 +552,58 @@
       newtableBody.appendChild(row);
     });
     oldTbody.parentNode.replaceChild(newtableBody, oldTbody);
+  }
+
+  // Helper functions
+
+  function csvToJSON(csv) {
+    const lines = csv.split('\r\n');
+    const result = [];
+    const headers = lines[0].split(',');
+
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i]) continue;
+      const obj = {};
+      const currentline = lines[i].split(',');
+
+      for (let j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
+      }
+      result.push(obj);
+    }
+    return result;
+  }
+
+  function isWorkDay(startOfWeek, endOfWeek, date) {
+    dateToTest = new Date(date).getDay();
+
+    if (startOfWeek < endOfWeek) {
+      return dateToTest >= startOfWeek && dateToTest <= endOfWeek;
+    }
+    if (startOfWeek > endOfWeek) {
+      return !(dateToTest > endOfWeek && dateToTest < startOfWeek);
+    }
+  }
+
+  function getStartOfWeek(date, startOfWeek, endOfWeek) {
+    const dateObj = new Date(date);
+    const dayOfWeek = dateObj.getDay();
+    const dayOfMonth = dateObj.getDate();
+    let daysToBeginningOfWeek;
+
+    if (isWorkDay(startOfWeek, endOfWeek, date)) {
+      if (dayOfWeek >= startOfWeek) {
+        daysToBeginningOfWeek = dayOfWeek - startOfWeek;
+      } else {
+        daysToBeginningOfWeek = dayOfWeek + (7 - startOfWeek);
+      }
+
+      const finalDate = dayOfMonth - daysToBeginningOfWeek;
+      dateObj.setDate(finalDate);
+
+      return dateObj.toISOString().substring(0, 10);
+    } else {
+      return null;
+    }
   }
 })();
